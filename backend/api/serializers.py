@@ -10,8 +10,8 @@ class CategoriesSerializer(serializers.ModelSerializer):
 class TicketsSerializer(serializers.ModelSerializer):
     assigned_to = serializers.PrimaryKeyRelatedField(
         queryset=User.objects.all(),
-        required=False,      # não obrigatório na entrada
-        allow_null=True      # permite valor null
+        required=False,
+        allow_null=True
     )
     class Meta:
         model = Tickets
