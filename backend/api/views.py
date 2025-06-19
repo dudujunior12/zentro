@@ -17,9 +17,9 @@ class TicketList(generics.ListCreateAPIView):
     def get_queryset(self):
         user = self.request.user
 
-        if user.is_staff or user.groups.filter(name='Administrator').exists():
+        if user.is_staff or user.groups.filter(name='Admins').exists():
             return Tickets.objects.all()
-        elif user.groups.filter(name='Technician').exists():
+        elif user.groups.filter(name='Technicians').exists():
             return Tickets.objects.filter(assigned_to__in=[user, None])
         else:
             return Tickets.objects.filter(created_by=user)
