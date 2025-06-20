@@ -1,0 +1,11 @@
+services:
+  backend:
+    container_name: backend
+    build:
+      context: ./
+      dockerfile: ./backend/Dockerfile
+    volumes:
+      - ./backend:/backend
+    env_file:
+      - ./.env  # Common env file
+    restart: always
