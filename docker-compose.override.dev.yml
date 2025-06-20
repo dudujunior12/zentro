@@ -1,0 +1,9 @@
+services:
+  backend:
+    ports:
+      - 8000:8000
+    volumes:
+      - ./backend:/backend
+    command: /bin/sh /backend/scripts/dev.sh
+    environment:
+      - DEBUG=True

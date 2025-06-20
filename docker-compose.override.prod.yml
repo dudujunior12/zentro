@@ -1,0 +1,56 @@
+services:
+  backend:
+    networks:
+      - internal_network
+    volumes:
+      - static:/backend/staticfiles 
+    command: /bin/sh /backend/scripts/prod.sh
+    environment:
+      - DEBUG=False
+      - POSTGRES_HOST=db
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    container_name: db
+    image: postgres:latest
+    env_file:
+      - ./.env 
+    networks:
+      - internal_network
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  nginx:
+    container_name: nginx
+    build:
+      context: ./
+      dockerfile: ./nginx/Dockerfile
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - internal_network
+    volumes:
+      - ./nginx/default.conf.template:/etc/nginx/templates/default.conf.template
+      - static:/static
+    env_file:
+      - ./.env  
+    depends_on:
+      backend:
+        condition: service_started
+      frontend:
+        condition: service_started
+
+volumes:
+  static:
+
+networks:
+  internal_network:
+    driver: bridge
